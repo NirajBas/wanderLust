@@ -35,6 +35,7 @@ app.use(session(sessionOptions));
 app.use(flash());
 
 app.use((req,res,next)=>{
+    console.log(req);
     req.locals.listingCreated = req.flash("created");
     req.locals.listingNotC = req.flash("not-created");
     next();
