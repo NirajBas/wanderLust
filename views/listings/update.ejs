@@ -1,0 +1,141 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<body>
+
+<div class="container mt-5 mb-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-6 col-md-8">
+
+            <div class="card shadow-lg border-0 rounded-4 p-4">
+
+                <h1 class="text-center mb-4">
+                    Edit Hotel Information
+                </h1>
+
+                <form method="post" action="/listings/<%= hotelInfo._id %>?_method=PATCH" class="needs-validation" novalidate>
+
+                    <div class="mb-3">
+
+                        <label for="title" class="form-label fw-semibold">
+                            Title
+                        </label>
+
+                        <input
+                            type="text"
+                            value="<%= hotelInfo.title %>"
+                            id="title"
+                            name="listing[title]"
+                            class="form-control form-control-sm"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label for="description" class="form-label fw-semibold">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="description"
+                            name="listing[description]"
+                            class="form-control form-control-sm"
+                            rows="3" required
+                        ><%= hotelInfo.description %></textarea>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label for="image" class="form-label fw-semibold">
+                            Image URL
+                        </label>
+
+                        <input
+                            type="text"
+                            value="<%= hotelInfo.image.url %>"
+                            id="image"
+                            name="listing[image][url]"
+                            class="form-control form-control-sm"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="price" class="form-label fw-semibold">
+                                Price
+                            </label>
+
+                            <input
+                                type="number"
+                                value="<%= hotelInfo.price %>"
+                                id="price"
+                                name="listing[price]"
+                                class="form-control form-control-sm"
+                                required
+                            >
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="country" class="form-label fw-semibold">
+                                Country
+                            </label>
+
+                            <input
+                                type="text"
+                                value="<%= hotelInfo.country %>"
+                                id="country"
+                                name="listing[country]"
+                                class="form-control form-control-sm"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label for="location" class="form-label fw-semibold">
+                            Location
+                        </label>
+
+                        <input
+                            type="text"
+                            value="<%= hotelInfo.location %>"
+                            id="location"
+                            name="listing[location]"
+                            class="form-control form-control-sm"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="d-grid">
+
+                        <button class="btn btn-dark btn-lg rounded-3">
+                            Update Hotel
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
