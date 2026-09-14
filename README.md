@@ -65,6 +65,7 @@ Use `npx nodemon app.js` if you want the server to restart on file changes.
 | PATCH | `/listings/:id` | Update listing |
 | DELETE | `/listings/:id` | Delete listing |
 | POST | `/listings/:id/reviews` | Add a review |
+| DELETE | `/listings/:id/reviews/:reviewId` | Delete a review |
 
 ## Project structure
 

@@ -89,3 +89,16 @@ body{
     position: relative;
     bottom: 0 !important;
 }
+
+.review-card {
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    background-color: #fafafa;
+}
+
+.review-card .card-body {
+    padding: 1.25rem !important;
+}
+
+.star-rating {
+    color: #fe424d;
+}

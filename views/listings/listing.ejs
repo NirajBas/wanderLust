@@ -77,10 +77,44 @@
                                     <button class="btn btn-outline-dark">Submit</button>
                                 </form>
                                 <hr>
-                                <h4>All Reviews</h4>
-                                <% listing.reviews.map((el)=>{ %>
-                                    
-                               <% }) %>
+                                <h4 class="mb-3">All Reviews</h4>
+                                <% if (!listing.reviews || listing.reviews.length === 0) { %>
+                                    <p class="text-muted">No reviews yet. Be the first to leave one.</p>
+                                <% } else { %>
+                                    <div class="row g-3">
+                                        <% for (let review of listing.reviews) { %>
+                                            <div class="col-md-6">
+                                                <div class="card review-card h-100 rounded-3">
+                                                    <div class="card-body">
+                                                        <p class="star-rating mb-2">
+                                                            <% for (let i = 1; i <= 5; i++) { %>
+                                                                <% if (i <= review.rating) { %>
+                                                                    <i class="fa-solid fa-star"></i>
+                                                                <% } else { %>
+                                                                    <i class="fa-regular fa-star"></i>
+                                                                <% } %>
+                                                            <% } %>
+                                                            <span class="text-muted ms-1"><%= review.rating %>/5</span>
+                                                        </p>
+                                                        <p class="card-text mb-2"><%= review.comments %></p>
+                                                        <% if (review.createdAt) { %>
+                                                            <p class="text-muted small mb-3">
+                                                                <%= review.createdAt.toLocaleDateString("en-IN") %>
+                                                            </p>
+                                                        <% } %>
+                                                        <form method="post"
+                                                            action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                                                            <button class="btn btn-sm btn-dark rounded-pill">
+                                                                Delete
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                <% } %>
+                            
                             </div>
 
                         </div>

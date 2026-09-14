@@ -10,7 +10,7 @@ const expressError = require("./expressError");
 const Review = require("./models/reviews.js");
 const {listingSchema, reviewSchema} = require("./schema.js");
 const session = require("express-session");
-const flash = requrie("connect-flash");
+const flash = require("connect-flash");
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"/views"));
@@ -35,8 +35,8 @@ app.use(session(sessionOptions));
 app.use(flash());
 
 app.use((req,res,next)=>{
-    req.locals.listingCreated = req.flash("created");
-    req.locals.listingNotC = req.flash("not-created");
+    res.locals.listingCreated = req.flash("listingCreated");
+    res.locals.listingNotC = req.flash("listingNotC");
     next();
 });
 
@@ -127,16 +127,32 @@ app.delete("/listings/:id",async (req,res)=>{
 
 //reviews section
 //post request for review
-app.post("/listings/:id/reviews",reviewValidate,async (req,res)=>{
+app.post("/listings/:id/reviews",reviewValidate,async (req,res,next)=>{
+    try{
       const {id} = req.params;
       let listing = await Listing.findById(id);
+      if(!listing){
+          return next(new expressError(404,"listing not found"));
+      }
       let newReview = new Review(req.body.review);
-      console.log(newReview);
       listing.reviews.push(newReview);
       await newReview.save();
       await listing.save();
-      console.log("review saved successfully");
       res.redirect(`/listings/${id}`);
+    }catch(err){
+      next(err);
+    }
+});
+
+app.delete("/listings/:id/reviews/:reviewId",async (req,res,next)=>{
+    try{
+      const {id, reviewId} = req.params;
+      await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+      await Review.findByIdAndDelete(reviewId);
+      res.redirect(`/listings/${id}`);
+    }catch(err){
+      next(err);
+    }
 });
 //show post in detail
 app.get("/listings/:id",async (req,res,next)=>{
