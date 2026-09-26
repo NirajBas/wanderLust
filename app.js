@@ -8,9 +8,13 @@ const methodOverride = require("method-override");
 const ejsMate = require('ejs-mate');
 const expressError = require("./expressError");
 const Review = require("./models/reviews.js");
+//for validation purpose
 const {listingSchema, reviewSchema} = require("./schema.js");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const localStrategy = require("passport-local");
+const User = require("./models/user.js");
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"/views"));
@@ -33,6 +37,11 @@ let sessionOptions = {
 }
 app.use(session(sessionOptions));
 app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session()); 
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.use((req,res,next)=>{
     res.locals.listingCreated = req.flash("listingCreated");
@@ -66,6 +75,15 @@ app.get("/listings",async (req,res,next)=>{
 });
 app.get("/listings/new",(req,res)=>{
     res.render("listings/new.ejs");
+});
+
+app.get("/registerUser",async (req,res)=>{
+    let newUser = new User({
+        email : "basyalniraj819@gmail.com",
+        username : "web-learner",
+    });
+    let registeredUser = await User.register(newUser,"basniraj819");
+    res.send(registeredUser);
 });
 
 // this is validating using joi.
@@ -184,7 +202,7 @@ app.use((err,req,res,next)=>{
 app.use((err,req,res,next) =>{
     console.log("this is an error handling middleware");
     let {status =500,message ="Internal server error"} = err;
-    res.status(status).send(message);
+    res.status(status).render("listings/error.ejs",{msg : message});
 });
 
 app.listen(port,()=>{
