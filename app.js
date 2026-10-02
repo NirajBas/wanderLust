@@ -15,6 +15,7 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const localStrategy = require("passport-local");
 const User = require("./models/user.js");
+const { stripTypeScriptTypes } = require("module");
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"/views"));
@@ -37,6 +38,8 @@ let sessionOptions = {
 }
 app.use(session(sessionOptions));
 app.use(flash());
+
+// configurations related to passport for authentication
 app.use(passport.initialize());
 app.use(passport.session()); 
 passport.use(new localStrategy(User.authenticate()));
@@ -46,6 +49,10 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req,res,next)=>{
     res.locals.listingCreated = req.flash("listingCreated");
     res.locals.listingNotC = req.flash("listingNotC");
+    res.locals.registerSuccess = req.flash("registerSuccess");
+    res.locals.formError = req.flash("formError");
+    res.locals.loginSuccess = req.flash("loginSuccess");
+    res.locals.logoutSuccess = req.flash("logoutSuccess");
     next();
 });
 
@@ -60,6 +67,56 @@ async function main() {
 app.get("/",(req,res)=>{
         const token = req.query.token;
        res.render("listings/home.ejs");
+});
+
+// this part is for authorization using passport
+// install passport passport-local for this
+app.get("/registerForm",(req,res)=>{
+    res.render("listings/form.ejs");
+});
+
+app.post("/registerForm",async(req,res,next)=>{
+    console.log("This is a post request for passport authorization");
+    try{
+        const {username,email,password} = req.body;
+        let newUser = new User({
+            email : email,
+            username : username,
+        });
+        let registerUser = await User.register(newUser, password);
+        req.login(registerUser, (err) => {  // auto login after register
+            if (err) return next(err);
+            req.flash("registerSuccess", "Welcome to WanderLust!");
+            res.redirect("/listings");
+        });
+    }catch(err){
+        req.flash("formError",err.message);
+        res.redirect("/registerForm");
+    }
+});
+
+// this is a login route
+app.get("/login",(req,res)=>{
+    res.render("listings/login.ejs");
+});
+// this is the login authentication route 
+app.post("/login", 
+    passport.authenticate("local", {
+        failureRedirect: "/login",
+        failureFlash: true,   // auto sets flash error on failure
+    }), 
+    (req, res) => {
+        req.flash("loginSuccess", "Welcome back!");
+        res.redirect("/listings");
+    }
+);
+
+app.get("/logout", (req, res, next) => {
+    req.logout((err) => {
+        if (err) return next(err);
+        req.flash("logoutSuccess", "Logged out successfully");
+        res.redirect("/");
+    });
 });
 
 app.get("/listings",async (req,res,next)=>{
@@ -80,7 +137,7 @@ app.get("/listings/new",(req,res)=>{
 app.get("/registerUser",async (req,res)=>{
     let newUser = new User({
         email : "basyalniraj819@gmail.com",
-        username : "web-learner",
+        username : "hencyBoy123",
     });
     let registeredUser = await User.register(newUser,"basniraj819");
     res.send(registeredUser);

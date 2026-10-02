@@ -1,0 +1,57 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+    <body>
+        <div class="container mt-5 mb-5">
+
+            <div class="row justify-content-center">
+
+                <div class="col-lg-6 col-md-8">
+
+                    <div class="card shadow-lg border-0 rounded-4 p-4">
+
+                        <h1 class="text-center mb-4">Sign up here:</h1>
+
+                        <form method="post" action="/registerForm" novalidate class="needs-validation">
+
+                            <div class="mb-3">
+                                <label for="username">
+                                    Username
+                                </label>
+
+                                <input type="text" placeholder="Enter your username" id="username"
+                                    name="username" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email">
+                                    Enter your email
+                                </label>
+                                <input type="email" placeholder="Enter your email" id="email" name="email"
+                                    class="form-control form-control-sm" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="password">
+                                    Enter password:
+                                </label>
+                                    <input type="password" name="password" placeholder="Enter your password" required class="form-control form-control-sm">
+                            </div>
+
+                            <div class="d-grid">
+
+                                <button class="btn btn-red btn-lg rounded-3">
+                                    Submit form
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </body>
