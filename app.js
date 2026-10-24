@@ -16,6 +16,11 @@ const passport = require("passport");
 const localStrategy = require("passport-local");
 const User = require("./models/user.js");
 const { stripTypeScriptTypes } = require("module");
+const {checkAuthentication} = require("./middlewares.js");
+const {redirectUrl} = require("./middlewares.js");
+const {checkOwner} = require("./middlewares.js");
+const {checkAuthor} = require("./middlewares.js");
+const {index} = require("./controllers/listing.js");
 
 app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"/views"));
@@ -53,6 +58,9 @@ app.use((req,res,next)=>{
     res.locals.formError = req.flash("formError");
     res.locals.loginSuccess = req.flash("loginSuccess");
     res.locals.logoutSuccess = req.flash("logoutSuccess");
+    res.locals.notAuthenticated = req.flash("notAuthenticated");
+    res.locals.error = req.flash("error");
+    res.locals.checkUser = req.user;
     next();
 });
 
@@ -71,11 +79,11 @@ app.get("/",(req,res)=>{
 
 // this part is for authorization using passport
 // install passport passport-local for this
-app.get("/registerForm",(req,res)=>{
+app.get("/signup",(req,res)=>{
     res.render("listings/form.ejs");
 });
 
-app.post("/registerForm",async(req,res,next)=>{
+app.post("/signup",async(req,res,next)=>{
     console.log("This is a post request for passport authorization");
     try{
         const {username,email,password} = req.body;
@@ -91,7 +99,7 @@ app.post("/registerForm",async(req,res,next)=>{
         });
     }catch(err){
         req.flash("formError",err.message);
-        res.redirect("/registerForm");
+        res.redirect("/signup");
     }
 });
 
@@ -100,47 +108,30 @@ app.get("/login",(req,res)=>{
     res.render("listings/login.ejs");
 });
 // this is the login authentication route 
-app.post("/login", 
+app.post("/login", redirectUrl,
     passport.authenticate("local", {
         failureRedirect: "/login",
         failureFlash: true,   // auto sets flash error on failure
     }), 
     (req, res) => {
         req.flash("loginSuccess", "Welcome back!");
-        res.redirect("/listings");
+        res.redirect(res.locals.redirectUrl || "/listings");
     }
 );
-
-app.get("/logout", (req, res, next) => {
+// this is for logging out of the current session.
+app.get("/logout",checkAuthentication, (req, res, next) => {
     req.logout((err) => {
-        if (err) return next(err);
+        if (err) {
+            return next(err);
+        }
         req.flash("logoutSuccess", "Logged out successfully");
         res.redirect("/");
     });
 });
 
-app.get("/listings",async (req,res,next)=>{
-    try{
-      let allListings = await Listing.find({});
-      if(allListings.length == 0){
-       return next(new expressError(404,"cannot get the listings"));
-      }
-      res.render("./listings/index.ejs",{allListings});
-    }catch(err){
-        next(new expressError(500,"I dont know what type of error is this"));
-    }
-});
-app.get("/listings/new",(req,res)=>{
+app.get("/listings",index);
+app.get("/listings/new",checkAuthentication,(req,res)=>{
     res.render("listings/new.ejs");
-});
-
-app.get("/registerUser",async (req,res)=>{
-    let newUser = new User({
-        email : "basyalniraj819@gmail.com",
-        username : "hencyBoy123",
-    });
-    let registeredUser = await User.register(newUser,"basniraj819");
-    res.send(registeredUser);
 });
 
 // this is validating using joi.
@@ -169,9 +160,11 @@ let reviewValidate = (req,res,next)=>{
     next();
 };
 
-app.post("/listings",schemaValidate,async (req,res,next)=>{
+app.post("/listings",checkAuthentication,schemaValidate,async (req,res,next)=>{
     try{
     let newListing = new Listing(req.body.listing);
+    newListing.owner = req.user._id;
+    console.log(newListing);
     await newListing.save();
     req.flash("listingCreated","New hotel added successfully");
     res.redirect("/listings");
@@ -183,18 +176,18 @@ app.post("/listings",schemaValidate,async (req,res,next)=>{
 
 
 //for updating the information
-app.get("/listings/:id/edit",async (req,res)=>{
+app.get("/listings/:id/edit",checkAuthentication,checkOwner,async (req,res)=>{
     const {id} = req.params;
     let hotelInfo =await Listing.findById(id);
     res.render("listings/update.ejs",{hotelInfo});
 });
-app.patch("/listings/:id",async (req,res)=>{
+app.patch("/listings/:id",checkAuthentication,checkOwner,async (req,res)=>{
     const {id} = req.params;
     let listing = req.body.listing;
     await Listing.findByIdAndUpdate(id,listing);
     res.redirect("/listings");
 });
-app.delete("/listings/:id",async (req,res)=>{
+app.delete("/listings/:id",checkAuthentication,checkOwner,async (req,res)=>{
     const {id} = req.params;
     await Listing.findByIdAndDelete(id);
     res.redirect("/listings/");
@@ -202,7 +195,7 @@ app.delete("/listings/:id",async (req,res)=>{
 
 //reviews section
 //post request for review
-app.post("/listings/:id/reviews",reviewValidate,async (req,res,next)=>{
+app.post("/listings/:id/reviews",checkAuthentication,reviewValidate,async (req,res,next)=>{
     try{
       const {id} = req.params;
       let listing = await Listing.findById(id);
@@ -210,6 +203,7 @@ app.post("/listings/:id/reviews",reviewValidate,async (req,res,next)=>{
           return next(new expressError(404,"listing not found"));
       }
       let newReview = new Review(req.body.review);
+      newReview.author = req.user._id;
       listing.reviews.push(newReview);
       await newReview.save();
       await listing.save();
@@ -219,7 +213,7 @@ app.post("/listings/:id/reviews",reviewValidate,async (req,res,next)=>{
     }
 });
 
-app.delete("/listings/:id/reviews/:reviewId",async (req,res,next)=>{
+app.delete("/listings/:id/reviews/:reviewId",checkAuthentication,checkAuthor,async (req,res,next)=>{
     try{
       const {id, reviewId} = req.params;
       await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
@@ -233,7 +227,9 @@ app.delete("/listings/:id/reviews/:reviewId",async (req,res,next)=>{
 app.get("/listings/:id",async (req,res,next)=>{
      let {id} = req.params;
     console.log(id);
-    const listing = await Listing.findById(id).populate("reviews");
+    const listing = await Listing.findById(id)
+        .populate("owner")
+        .populate({ path: "reviews", populate: { path: "author" } });
     if(!listing){
        return next(new expressError(400,"your document could not be found"));
     }

@@ -1,95 +1,90 @@
 <% layout("/layouts/boilerplate.ejs") %>
 
-<body>
-<%= listingCreated %>
-<%= listingNotC %>
-<%= registerSuccess %>
-<%= formError %>
-<%= loginSuccess %>
-<div class="container mt-4">
+    <body>
+        <%= listingCreated %>
+            <%= listingNotC %>
+                <%= registerSuccess %>
+                    <%= formError %>
+                        <%= loginSuccess %>
+                        <%= error %>
+                            <div class="container mt-4">
 
-    <h1 class="text-center fw-bold mb-5">
-        Explore Hotel Listings
-    </h1>
+                                <h1 class="text-center fw-bold mb-5">
+                                    Explore Hotel Listings
+                                </h1>
 
-    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
+                                <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
 
-        <% for(let list of allListings){ %>
+                                    <% for(let list of allListings){ %>
 
-        <div class="col d-flex justify-content-center">
+                                        <div class="col d-flex justify-content-center">
 
-            <div class="card shadow-sm border-0 rounded-4 overflow-hidden hotel-card">
+                                            <div class="card shadow-sm border-0 rounded-4 overflow-hidden hotel-card">
 
-                <a href="/listings/<%= list._id %>" class="listing-link">
+                                                <a href="/listings/<%= list._id %>" class="listing-link">
 
-                    <img
-                        src="<%= list.image.url %>"
-                        class="card-img-top"
-                        alt="hotel_image"
-                        style="height: 16rem; margin-bottom: 1.25rem;object-fit: cover;"
-                    >
+                                                    <img src="<%= list.image.url %>" class="card-img-top"
+                                                        alt="hotel_image"
+                                                        style="height: 16rem; margin-bottom: 1.25rem;object-fit: cover;">
 
-                    <div class="card-body ms-1">
+                                                    <div class="card-body ms-1">
 
-                        <h5 class="card-title fw-bold mb-3">
-                            <%= list.title %>
-                        </h5>
+                                                        <h5 class="card-title fw-bold mb-3">
+                                                            <%= list.title %>
+                                                        </h5>
 
-                        <p class="card-text text-muted mb-2">
-                            <%= list.description.length > 80 
-                                ? list.description.substring(0,80) + "..."
-                                : list.description %>
-                        </p>
+                                                        <p class="card-text text-muted mb-2">
+                                                            <%= list.description.length> 80
+                                                                ? list.description.substring(0,80) + "..."
+                                                                : list.description %>
+                                                        </p>
 
-                        <div class="mb-2">
-                            <span class="fw-semibold">Price:</span>
-                            ₹<%= list.price.toLocaleString("en-IN") %>
-                        </div>
+                                                        <div class="mb-2">
+                                                            <span class="fw-semibold">Price:</span>
+                                                            ₹<%= list.price.toLocaleString("en-IN") %>
+                                                        </div>
 
-                        <div class="mb-1">
-                            <span class="fw-semibold">Location:</span>
-                            <%= list.location %>
-                        </div>
+                                                        <div class="mb-1">
+                                                            <span class="fw-semibold">Location:</span>
+                                                            <%= list.location %>
+                                                        </div>
 
-                        <div>
-                            <span class="fw-semibold">Country:</span>
-                            <%= list.country %>
-                        </div>
+                                                        <div>
+                                                            <span class="fw-semibold">Country:</span>
+                                                            <%= list.country %>
+                                                        </div>
 
-                    </div>
+                                                    </div>
 
-                </a>
+                                                </a>
 
-                <div class="card-footer bg-white border-0 d-flex justify-content-between px-3 pb-3">
+                                                <% if (checkUser && list.owner && list.owner.equals(checkUser._id)) { %>
+                                                <div
+                                                    class="card-footer bg-white border-0 d-flex justify-content-between px-3 pb-3">
+                                                    <a href="/listings/<%= list._id %>/edit"
+                                                        class="btn btn-outline-dark btn-sm rounded-pill">
+                                                        Edit
+                                                    </a>
 
-                    <a
-                        href="/listings/<%= list._id %>/edit"
-                        class="btn btn-outline-dark btn-sm rounded-pill"
-                    >
-                        Edit
-                    </a>
+                                                    <form method="post"
+                                                        action="/listings/<%= list._id %>?_method=DELETE">
 
-                    <form
-                        method="post"
-                        action="/listings/<%= list._id %>?_method=DELETE"
-                    >
+                                                        <button class="btn btn-dark btn-sm rounded-pill">
+                                                            Delete
+                                                        </button>
 
-                        <button class="btn btn-dark btn-sm rounded-pill">
-                            Delete
-                        </button>
+                                                    </form>
+                                                </div>
+                                                <% } %>
 
-                    </form>
+                                            </div>
 
-                </div>
+                                        </div>
 
-            </div>
+                                        <% } %>
 
-        </div>
+                                </div>
 
-        <% } %>
+                            </div>
 
-    </div>
-
-</div>
-
-</body>
+    </body>

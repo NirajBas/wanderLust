@@ -41,6 +41,7 @@
                             </div>
 
                             <!-- Buttons -->
+                            <% if (checkUser && listing.owner && listing.owner._id.equals(checkUser._id)) { %>
                             <div class="d-flex gap-3">
 
                                 <a href="/listings/<%= listing._id %>/edit"
@@ -57,11 +58,13 @@
                                 </form>
 
                             </div>
+                            <% } %>
 
 
                             <div class="col-8">
                                 <hr class="my-4">
 
+                                <% if (checkUser) { %>
                                 <h4 class="mb-3">Leave a review</h4>
                                 <form method= "post" action="/listings/<%= listing._id %>/reviews" novalidate class="needs-validation">
                                     <div class="mb-3">
@@ -78,6 +81,7 @@
                                     <button class="btn btn-outline-dark">Submit</button>
                                 </form>
                                 <hr>
+                                <% } %>
                                 <h4 class="mb-3">All Reviews</h4>
 
                                 <% if (!listing.reviews || listing.reviews.length === 0) { %>
@@ -98,18 +102,21 @@
                                                             <% } %>
                                                             <span class="text-muted ms-1"><%= review.rating %>/5</span>
                                                         </p>
+                                                        <p class="fw-semibold mb-1">@<%= review.author ? review.author.username : "Anonymous" %></p>
                                                         <p class="card-text mb-2"><%= review.comments %></p>
                                                         <% if (review.createdAt) { %>
                                                             <p class="text-muted small mb-3">
                                                                 <%= review.createdAt.toLocaleDateString("en-IN") %>
                                                             </p>
                                                         <% } %>
+                                                        <% if (checkUser && review.author && review.author._id.equals(checkUser._id)) { %>
                                                         <form method="post"
                                                             action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
                                                             <button class="btn btn-sm btn-dark rounded-pill">
                                                                 Delete
                                                             </button>
                                                         </form>
+                                                        <% } %>
                                                     </div>
                                                 </div>
                                             </div>
