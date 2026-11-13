@@ -1,0 +1,28 @@
+<%
+  // typeof checks so the page still renders if a flash key was never set
+  // (ejs-mate replaces `locals`, so `locals.x` can't be used here)
+  const successMsgs = [].concat(
+      typeof listingCreated !== "undefined" ? listingCreated : [],
+      typeof registerSuccess !== "undefined" ? registerSuccess : [],
+      typeof loginSuccess !== "undefined" ? loginSuccess : [],
+      typeof logoutSuccess !== "undefined" ? logoutSuccess : []
+  ).filter(Boolean);
+  const errorMsgs = [].concat(
+      typeof listingNotC !== "undefined" ? listingNotC : [],
+      typeof formError !== "undefined" ? formError : [],
+      typeof notAuthenticated !== "undefined" ? notAuthenticated : [],
+      typeof error !== "undefined" ? error : []
+  ).filter(Boolean);
+%>
+<% for (let msg of successMsgs) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <%= msg %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>
+<% for (let msg of errorMsgs) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <%= msg %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% } %>

@@ -1,6 +1,66 @@
 <% layout("/layouts/boilerplate.ejs") %>
-<body>
-    <%= logoutSuccess %>
-    <h2>Home page under construction !</h2>
-    <p>See you soon!!!!!!</p>
-</body>
+
+<!-- hero -->
+<section class="hero">
+    <div class="hero-content">
+        <h1 class="hero-title">Find your next place to wander</h1>
+        <p class="hero-subtitle">Cottages, castles, mountain cabins and city lofts, hosted by people around the world.</p>
+
+        <form class="hero-search" role="search" method="get" action="/listings">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="search" name="q" placeholder="Where are you going?" aria-label="Search destinations">
+            <button type="submit" class="btn search-btn">Search</button>
+        </form>
+
+        <a href="/listings" class="btn btn-light rounded-pill px-4 mt-3 fw-semibold">Explore all stays</a>
+    </div>
+</section>
+
+<!-- categories -->
+<section class="home-section">
+    <h3 class="fw-bold mb-3">Browse by category</h3>
+    <div class="home-categories">
+        <% for (let cat of categories) { %>
+            <a href="/listings?category=<%= encodeURIComponent(cat.name) %>" class="home-category">
+                <i class="<%= cat.icon %>"></i>
+                <span><%= cat.name %></span>
+            </a>
+        <% } %>
+    </div>
+</section>
+
+<!-- latest listings -->
+<% if (featured.length) { %>
+<section class="home-section">
+    <div class="d-flex justify-content-between align-items-baseline mb-3">
+        <h3 class="fw-bold mb-0">Newest stays</h3>
+        <a href="/listings" class="see-all">See all <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-1 g-4">
+        <% for (let list of featured) { %>
+            <div class="col">
+                <a href="/listings/<%= list._id %>" class="listing-link">
+                    <div class="card border-0">
+                        <img src="<%= list.image && list.image.url %>" class="card-img-top" alt="<%= list.title %>"
+                             style="height: 14rem; object-fit: cover;">
+                        <div class="card-body mt-2">
+                            <h6 class="fw-bold mb-1"><%= list.title %></h6>
+                            <p class="text-muted mb-1"><%= list.location %>, <%= list.country %></p>
+                            <p><b>₹<%= Math.round(list.price).toLocaleString("en-IN") %></b> / night</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <% } %>
+    </div>
+</section>
+<% } %>
+
+<!-- host CTA -->
+<section class="home-section host-cta">
+    <div>
+        <h3 class="fw-bold mb-1">Have a place to share?</h3>
+        <p class="text-muted mb-0">List it on WanderLust and start hosting travellers.</p>
+    </div>
+    <a href="/listings/new" class="btn btn-dark rounded-pill px-4">List your place</a>
+</section>

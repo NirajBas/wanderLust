@@ -1,4 +1,5 @@
 const Joi = require("joi");
+const { categoryNames } = require("./utils/categories.js");
 
 const listingSchema = Joi.object({
     listing : Joi.object({
@@ -7,9 +8,10 @@ const listingSchema = Joi.object({
         country : Joi.string().required(),
         location : Joi.string().required(),
         price : Joi.number().required().min(0),
+        category : Joi.string().valid(...categoryNames).required(),
         image : Joi.object({
             url : Joi.string().allow("",null),
-        }).required(),
+        }).optional(),
         
     }).required()
 });

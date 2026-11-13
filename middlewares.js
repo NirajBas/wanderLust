@@ -1,9 +1,7 @@
 const Listing = require("./models/listing.js");
 const Review = require("./models/reviews.js");
 module.exports.checkAuthentication = (req,res,next)=>{
-    console.log(req.originalUrl);
     if(!req.isAuthenticated()){
-        console.log(req.session);
         req.session.redirectUrl = req.originalUrl;
         req.flash("notAuthenticated","the user is not logged in");
         return res.redirect("/login");

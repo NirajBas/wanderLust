@@ -103,7 +103,7 @@
 
                     </div>
 
-                    <div class="mb-4">
+                    <div class="mb-3">
 
                         <label for="location" class="form-label fw-semibold">
                             Location
@@ -117,6 +117,22 @@
                             class="form-control form-control-sm"
                             required
                         >
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label for="category" class="form-label fw-semibold">
+                            Category
+                        </label>
+
+                        <select id="category" name="listing[category]" class="form-select form-select-sm" required>
+                            <option value="" disabled <%= !hotelInfo.category ? "selected" : "" %>>Choose a category</option>
+                            <% for (let cat of categories) { %>
+                                <option value="<%= cat.name %>" <%= hotelInfo.category === cat.name ? "selected" : "" %>><%= cat.name %></option>
+                            <% } %>
+                        </select>
+                        <div class="invalid-feedback">Please choose a category.</div>
 
                     </div>
 

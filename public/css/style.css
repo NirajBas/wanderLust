@@ -4,7 +4,7 @@ body{
 
 /* navbar */
 .navbar {
-    height: 5rem;
+    min-height: 5rem;
     background-color: white;
 }
 .fa-compass{
@@ -101,4 +101,208 @@ body{
 
 .star-rating {
     color: #fe424d;
+}
+/* search (navbar) */
+.nav-search {
+    max-width: 26rem;
+    width: 100%;
+}
+.search-input {
+    border-radius: 2rem 0 0 2rem !important;
+    padding: 0.5rem 1.25rem;
+}
+.search-btn {
+    background-color: #fe424d !important;
+    color: #fff !important;
+    border-radius: 0 2rem 2rem 0 !important;
+    padding: 0 1.25rem;
+    white-space: nowrap;
+}
+.search-btn:hover {
+    background-color: #e3363f !important;
+}
+
+/* filters */
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.filters {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    flex: 1;
+    min-width: 0;
+    padding-bottom: 0.25rem;
+    scrollbar-width: none;
+}
+.filters::-webkit-scrollbar {
+    display: none;
+}
+.filter {
+    text-align: center;
+    color: #222222;
+    text-decoration: none;
+    opacity: 0.65;
+    flex-shrink: 0;
+    border-bottom: 2px solid transparent;
+    padding-bottom: 0.4rem;
+}
+.filter i {
+    font-size: 1.3rem;
+}
+.filter p {
+    font-size: 0.8rem;
+    margin: 0.4rem 0 0;
+    white-space: nowrap;
+}
+.filter:hover {
+    opacity: 1;
+    color: #222222;
+    border-bottom-color: #dddddd;
+}
+.filter.active {
+    opacity: 1;
+    border-bottom-color: #222222;
+    font-weight: 600;
+}
+
+/* tax switch */
+.tax-toggle {
+    border: 1px solid #dddddd;
+    border-radius: 1rem;
+    padding: 0.75rem 1rem;
+    flex-shrink: 0;
+}
+.tax-toggle .form-check-label {
+    font-size: 0.9rem;
+    margin-right: 0.5rem;
+}
+.tax-toggle .form-check-input:checked {
+    background-color: #222222;
+    border-color: #222222;
+}
+
+.results-info a {
+    color: #222222;
+}
+.empty-state {
+    padding: 4rem 1rem;
+}
+.empty-state .fa-compass {
+    font-size: 3rem;
+}
+
+@media (max-width: 768px) {
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    .filters {
+        gap: 1.25rem;
+    }
+    .navbar-nav {
+        margin-left: 0;
+    }
+}
+
+/* home / landing page */
+.hero {
+    border-radius: 1.5rem;
+    min-height: 26rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #fff;
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
+        url("https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=70") center / cover no-repeat;
+}
+.hero-content {
+    max-width: 40rem;
+    width: 100%;
+}
+.hero-title {
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+}
+.hero-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 1.75rem;
+}
+.hero-search {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 2rem;
+    padding: 0.35rem 0.35rem 0.35rem 1.25rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+.hero-search i {
+    color: #717171;
+}
+.hero-search input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    padding: 0.6rem 0.75rem;
+    font-size: 1rem;
+}
+.hero-search .search-btn {
+    border-radius: 2rem !important;
+    padding: 0.6rem 1.5rem;
+}
+.home-section {
+    margin-top: 3rem;
+}
+.home-categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    gap: 1rem;
+}
+.home-category {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.25rem 0.5rem;
+    border: 1px solid #ebebeb;
+    border-radius: 1rem;
+    color: #222222;
+    text-decoration: none;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+.home-category i {
+    font-size: 1.5rem;
+}
+.home-category:hover {
+    color: #222222;
+    border-color: #222222;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+.see-all {
+    color: #222222;
+    font-weight: 600;
+    text-decoration: none;
+}
+.see-all:hover {
+    text-decoration: underline;
+    color: #222222;
+}
+.host-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f7f7f7;
+    border-radius: 1.5rem;
+    padding: 2rem;
 }
